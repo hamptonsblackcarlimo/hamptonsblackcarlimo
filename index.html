@@ -9,8 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
   <style>
     /* ── TOKENS ── */
     :root {
@@ -1532,6 +1530,232 @@
       .service-desc { opacity: 1; transform: none; }
       .service-card:hover img { transform: none; }
     }
+    /* ── QUOTE ACTIONS — Call / Text / Email ── */
+    .quote-actions {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .quote-lede {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      line-height: 1.5;
+      color: rgba(245, 242, 237, 0.86);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+      text-align: center;
+    }
+
+    .quote-primary {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .quote-btn {
+      flex: 1 1 0;
+      max-width: 300px;
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 16px 22px;
+      border-radius: 16px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.28s ease, transform 0.2s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+
+    /* Specular highlight — same language as the rest of the glass UI */
+    .quote-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 52%;
+      border-radius: 16px 16px 0 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0) 100%);
+      pointer-events: none;
+    }
+
+    /* Call — the primary action */
+    .quote-btn-call {
+      background: var(--gold);
+      color: var(--obsidian);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+        0 10px 30px rgba(201, 169, 110, 0.40),
+        0 2px 6px rgba(0, 0, 0, 0.28);
+    }
+
+    .quote-btn-call:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow:
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.52),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.15),
+        0 14px 38px rgba(201, 169, 110, 0.52),
+        0 3px 8px rgba(0, 0, 0, 0.22);
+    }
+
+    /* Text — the glass twin */
+    .quote-btn-text {
+      background: rgba(10, 10, 15, 0.40);
+      backdrop-filter: blur(40px) saturate(210%) brightness(0.94);
+      -webkit-backdrop-filter: blur(40px) saturate(210%) brightness(0.94);
+      border: 1px solid rgba(255, 255, 255, 0.26);
+      color: var(--offwhite);
+      box-shadow:
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.36),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+        0 14px 42px rgba(0, 0, 0, 0.46),
+        0 0 0 0.5px rgba(255, 255, 255, 0.12);
+    }
+
+    .quote-btn-text::before {
+      background: linear-gradient(to bottom, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0) 100%);
+    }
+
+    .quote-btn-text:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(201, 169, 110, 0.60);
+      transform: translateY(-2px);
+      box-shadow:
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+        0 18px 48px rgba(0, 0, 0, 0.52);
+    }
+
+    .quote-btn:active { transform: translateY(0) scale(0.985); }
+
+    .quote-ico {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-btn-call .quote-ico { color: var(--obsidian); opacity: 0.9; }
+    .quote-btn-text .quote-ico { color: var(--gold); }
+
+    .quote-btn-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .quote-btn-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .quote-btn-sub {
+      font-size: 13.5px;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      opacity: 0.7;
+      white-space: nowrap;
+    }
+
+    .quote-btn-text .quote-btn-sub { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35); }
+
+    /* Email — the quieter third option */
+    .quote-email {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      padding: 13px 28px;
+      border-radius: 999px;
+      background: rgba(10, 10, 15, 0.30);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      color: rgba(245, 242, 237, 0.88);
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      text-decoration: none;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    }
+
+    .quote-email:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(201, 169, 110, 0.55);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .quote-email:active { transform: translateY(0) scale(0.985); }
+
+    .quote-email .quote-ico { width: 17px; height: 17px; color: var(--gold); }
+
+    /* Keyboard focus */
+    .quote-btn:focus-visible,
+    .quote-email:focus-visible {
+      outline: 2px solid var(--gold-light);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .quote-btn, .quote-email { transition: none; }
+      .quote-btn:hover, .quote-email:hover { transform: none; }
+    }
+
+    /* ── QUOTE ACTIONS — tablet & phone ── */
+    @media (max-width: 900px) {
+      .quote-actions { gap: 14px; max-width: 100%; }
+      .quote-lede { font-size: 13.5px; }
+      .quote-primary { flex-direction: column; gap: 12px; width: 100%; }
+      .quote-btn {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: 100%;
+        min-height: 72px;
+        padding: 15px 20px;
+      }
+      .quote-email { width: 100%; padding: 15px 20px; font-size: 12px; }
+    }
+
+    @media (max-width: 600px) {
+      .quote-lede { font-size: 13px; line-height: 1.45; }
+      .quote-btn { min-height: 68px; gap: 13px; padding: 14px 18px; border-radius: 14px; }
+      .quote-btn::before { border-radius: 14px 14px 0 0; }
+      .quote-btn-label { font-size: 12.5px; letter-spacing: 0.07em; }
+      .quote-btn-sub { font-size: 13px; }
+      .quote-ico { width: 20px; height: 20px; }
+    }
+
+    @media (max-width: 360px) {
+      .quote-btn { padding: 13px 15px; gap: 11px; min-height: 64px; }
+      .quote-btn-label { font-size: 11.5px; }
+      .quote-btn-sub { font-size: 12.5px; }
+      .quote-email { font-size: 11px; letter-spacing: 0.08em; padding: 14px 16px; }
+    }
+
   </style>
 </head>
 <body>
@@ -1561,41 +1785,38 @@
       <p class="hero-eyebrow">New York's Premier Chauffeur Service</p>
       <h1 class="hero-heading">Arrive in <em>perfect</em><br>composure.</h1>
 
-      <div class="booking-widget">
-        <div class="widget-tabs">
-          <button class="widget-tab active" onclick="setTab(this,'oneway')">One Way</button>
-          <button class="widget-tab" onclick="setTab(this,'hourly')">By the Hour</button>
-          <button class="widget-tab" onclick="setTab(this,'roundtrip')">Round Trip</button>
+      <div class="quote-actions">
+        <p class="quote-lede">Tell us where you're going — we'll send a quote right back.</p>
+
+        <div class="quote-primary">
+          <a class="quote-btn quote-btn-call" href="tel:+19296259193" aria-label="Call Hamptons Black Car and Limo at (929) 625-9193 for a quote">
+            <svg class="quote-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span class="quote-btn-copy">
+              <span class="quote-btn-label">Call for a Quote</span>
+              <span class="quote-btn-sub">(929) 625-9193</span>
+            </span>
+          </a>
+
+          <a class="quote-btn quote-btn-text" id="quote-text-link" href="sms:+19296259193" aria-label="Text Hamptons Black Car and Limo at (929) 625-9193 for a quote">
+            <svg class="quote-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            </svg>
+            <span class="quote-btn-copy">
+              <span class="quote-btn-label">Text for a Quote</span>
+              <span class="quote-btn-sub">(929) 625-9193</span>
+            </span>
+          </a>
         </div>
-        <div class="widget-bar">
-          <div class="widget-row">
-            <div class="widget-field">
-              <label>Pickup location</label>
-              <input type="text" placeholder="Address, airport, hotel…" />
-            </div>
-            <div class="widget-divider"></div>
-            <div class="widget-field">
-              <label>Drop-off location</label>
-              <input type="text" placeholder="Address, airport, hotel…" />
-            </div>
-            <div class="widget-divider"></div>
-            <div class="widget-field field-date" id="date-field" onclick="document.getElementById('date-picker')._flatpickr.open()">
-              <label>Date</label>
-              <input type="text" id="date-picker" placeholder="Select a date" readonly />
-              <svg class="field-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </div>
-            <div class="widget-divider"></div>
-            <div class="widget-field field-time" id="time-field">
-              <label>Pickup time</label>
-              <input type="text" id="time-picker" placeholder="Select time" readonly />
-              <svg class="field-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              <div class="time-dropdown" onclick="event.stopPropagation()">
-                <ul class="time-list" id="time-list"></ul>
-              </div>
-            </div>
-            <div class="btn-book-wrap"><button class="btn-book">View Rides</button></div>
-          </div>
-        </div>
+
+        <a class="quote-email" id="quote-email-link" href="mailto:hamptonsblackcarlimo@gmail.com" aria-label="Email Hamptons Black Car and Limo for a quote">
+          <svg class="quote-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+            <polyline points="22,6 12,13 2,6"></polyline>
+          </svg>
+          <span>Email a Quote Request</span>
+        </a>
       </div>
     </div>
   </section>
@@ -1813,127 +2034,64 @@
     </div>
   </section>
 
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const dateField = document.getElementById('date-field');
+    /* ── Quote actions: reference number + pre-filled text / email ── */
+    (function () {
+      var PHONE = '+19296259193';
+      var EMAIL = 'hamptonsblackcarlimo@gmail.com';
 
-      flatpickr("#date-picker", {
-        dateFormat: "m/d/Y",
-        minDate: "today",
-        disableMobile: "true",
-        static: false,
-        monthSelectorType: "static",
-        onOpen: function() { dateField.classList.add('open'); },
-        onClose: function() { dateField.classList.remove('open'); }
-      });
-
-      /* ── Custom scrollable pickup-time dropdown (15-minute intervals) ── */
-      const timeField = document.getElementById('time-field');
-      const timeInput = document.getElementById('time-picker');
-      const timeList = document.getElementById('time-list');
-      const timeDropdown = timeField.querySelector('.time-dropdown');
-      const VISIBLE_ROWS = 6;
-
-      // Build the list of times, 12:00 AM → 11:45 PM, in 15-minute steps
-      const times = [];
-      for (let mins = 0; mins < 24 * 60; mins += 15) {
-        let h = Math.floor(mins / 60);
-        const m = mins % 60;
-        const period = h < 12 ? 'AM' : 'PM';
-        let h12 = h % 12;
-        if (h12 === 0) h12 = 12;
-        const label = String(h12).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ' ' + period;
-        times.push(label);
-      }
-
-      times.forEach(function(label) {
-        const li = document.createElement('li');
-        li.className = 'time-option';
-        li.textContent = label;
-        li.dataset.value = label;
-        li.addEventListener('click', function() {
-          timeInput.value = label;
-          timeList.querySelectorAll('.time-option.selected').forEach(el => el.classList.remove('selected'));
-          li.classList.add('selected');
-          closeTimeDropdown();
-        });
-        timeList.appendChild(li);
-      });
-
-      // Detach the dropdown from the (clipped) hero section and attach it to <body>
-      // so it can render as a fixed overlay in front of everything, regardless of
-      // any ancestor's overflow:hidden.
-      document.body.appendChild(timeDropdown);
-
-      function sizeDropdownToRows() {
-        const firstRow = timeList.querySelector('.time-option');
-        if (!firstRow) return;
-        const rowHeight = firstRow.getBoundingClientRect().height;
-        const listPadding = 20; // 10px top + 10px bottom on .time-list
-        timeList.style.maxHeight = (rowHeight * VISIBLE_ROWS) + 'px';
-        timeDropdown.style.maxHeight = (rowHeight * VISIBLE_ROWS + listPadding) + 'px';
-      }
-
-      function positionDropdown() {
-        const rect = timeField.getBoundingClientRect();
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        const GUT = 12; // keep this much clear of the screen edge
-
-        // Width: never wider than the screen allows
-        const width = Math.min(Math.max(rect.width, 220), vw - GUT * 2);
-        timeDropdown.style.width = width + 'px';
-
-        // Horizontal: clamp inside the viewport instead of running off-screen
-        let left = rect.left;
-        if (left + width > vw - GUT) left = vw - GUT - width;
-        if (left < GUT) left = GUT;
-        timeDropdown.style.left = left + 'px';
-
-        // Vertical: flip above the field if there isn't room below
-        const dropH = timeDropdown.offsetHeight || 260;
-        let top = rect.bottom + 10;
-        if (top + dropH > vh - GUT) {
-          const above = rect.top - dropH - 10;
-          top = above >= GUT ? above : Math.max(GUT, vh - GUT - dropH);
+      // Reference: HBC-MMDD-XXXX (date + 4 unambiguous characters)
+      function buildRef() {
+        var d = new Date();
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var dd = String(d.getDate()).padStart(2, '0');
+        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I, O, 0, 1
+        var tail = '';
+        for (var i = 0; i < 4; i++) {
+          tail += chars.charAt(Math.floor(Math.random() * chars.length));
         }
-        timeDropdown.style.top = top + 'px';
+        return 'HBC-' + mm + dd + '-' + tail;
       }
 
-      function openTimeDropdown() {
-        sizeDropdownToRows();
-        positionDropdown();
-        timeField.classList.add('open');
-        timeDropdown.classList.add('open');
-        const selected = timeList.querySelector('.time-option.selected');
-        const target = selected || timeList.firstElementChild;
-        if (target) {
-          timeList.scrollTop = target.offsetTop - (timeList.clientHeight / 2) + (target.clientHeight / 2);
-        }
-        window.addEventListener('scroll', positionDropdown, true);
-        window.addEventListener('resize', positionDropdown);
+      var ref = buildRef();
+
+      // ── Text message ──
+      var smsBody =
+        'Hello Hamptons Black Car & Limo — I\'d like to request a quote for a trip. ' +
+        'Ref: ' + ref;
+
+      var smsLink = document.getElementById('quote-text-link');
+      if (smsLink) {
+        // iOS uses "&body=" after the number; Android and everything else use "?body="
+        var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        smsLink.href = 'sms:' + PHONE + (isIOS ? '&' : '?') + 'body=' + encodeURIComponent(smsBody);
       }
 
-      function closeTimeDropdown() {
-        timeField.classList.remove('open');
-        timeDropdown.classList.remove('open');
-        window.removeEventListener('scroll', positionDropdown, true);
-        window.removeEventListener('resize', positionDropdown);
+      // ── Email ──
+      var emailSubject = 'Quote Request — ' + ref;
+      var emailBody = [
+        'Hello Hamptons Black Car & Limo,',
+        '',
+        'I\'d like to request a quote for the following trip:',
+        '',
+        'Pickup location:',
+        'Drop-off location:',
+        'Date and time:',
+        'Passengers:',
+        '',
+        'Thank you,',
+        '',
+        'Reference: ' + ref
+      ].join('\r\n');
+
+      var emailLink = document.getElementById('quote-email-link');
+      if (emailLink) {
+        emailLink.href = 'mailto:' + EMAIL +
+          '?subject=' + encodeURIComponent(emailSubject) +
+          '&body=' + encodeURIComponent(emailBody);
       }
-
-      timeField.addEventListener('click', function() {
-        if (timeDropdown.classList.contains('open')) {
-          closeTimeDropdown();
-        } else {
-          openTimeDropdown();
-        }
-      });
-
-      document.addEventListener('click', function(e) {
-        if (!timeField.contains(e.target) && !timeDropdown.contains(e.target)) closeTimeDropdown();
-      });
-    });
+    })();
   </script>
   <!-- ── FOOTER ── -->
   <footer>
@@ -2002,12 +2160,6 @@
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 60);
     });
-
-    // Booking tabs
-    function setTab(el, type) {
-      document.querySelectorAll('.widget-tab').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-    }
 
     // Animate on scroll (simple intersection observer)
     const observer = new IntersectionObserver((entries) => {
