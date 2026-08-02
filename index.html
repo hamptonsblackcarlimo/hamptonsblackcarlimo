@@ -2056,9 +2056,16 @@
       var ref = buildRef();
 
       // ── Text message ──
-      var smsBody =
-        'Hello Hamptons Black Car & Limo — I\'d like to request a quote for a trip. ' +
-        'Ref: ' + ref;
+      var smsBody = [
+        'Hello Hamptons Black Car & Limo, I\'d like to request a quote for the following trip:',
+        '',
+        'Pickup location:',
+        'Drop-off location:',
+        'Date and time:',
+        'Passengers:',
+        '',
+        'Ref: ' + ref
+      ].join('\n');
 
       var smsLink = document.getElementById('quote-text-link');
       if (smsLink) {
