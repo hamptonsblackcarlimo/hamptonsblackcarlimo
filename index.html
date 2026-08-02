@@ -2035,69 +2035,93 @@
   </section>
 
   <script>
-    /* ── Quote actions: reference number + pre-filled text / email ── */
+    /* ── Quote actions: unique reference + pre-filled text / email ── */
     (function () {
       var PHONE = '+19296259193';
       var EMAIL = 'hamptonsblackcarlimo@gmail.com';
 
-      // Reference: HBC-MMDD-XXXX (date + 4 unambiguous characters)
+      // Reference: HBC-MMDD-XXXXX
+      // Date, then 5 unambiguous characters — a fresh one for every request.
       function buildRef() {
         var d = new Date();
         var mm = String(d.getMonth() + 1).padStart(2, '0');
         var dd = String(d.getDate()).padStart(2, '0');
-        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I, O, 0, 1
+        var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I, O, 0, 1 — easy to read aloud
+        var len = 5;
         var tail = '';
-        for (var i = 0; i < 4; i++) {
-          tail += chars.charAt(Math.floor(Math.random() * chars.length));
+
+        // Use the browser's cryptographic RNG when available so two people
+        // requesting a quote at the same moment can't land on the same code.
+        var rnd = new Array(len);
+        if (window.crypto && window.crypto.getRandomValues) {
+          var buf = new Uint32Array(len);
+          window.crypto.getRandomValues(buf);
+          for (var i = 0; i < len; i++) rnd[i] = buf[i] / 4294967296;
+        } else {
+          for (var j = 0; j < len; j++) rnd[j] = Math.random();
+        }
+
+        for (var k = 0; k < len; k++) {
+          tail += chars.charAt(Math.floor(rnd[k] * chars.length));
         }
         return 'HBC-' + mm + dd + '-' + tail;
       }
 
-      var ref = buildRef();
+      // iOS wants "&body=" after the number; Android and everything else use "?body="
+      var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
-      // ── Text message ──
-      var smsBody = [
-        'Hello Hamptons Black Car & Limo, I\'d like to request a quote for the following trip:',
-        '',
-        'Pickup location:',
-        'Drop-off location:',
-        'Date and time:',
-        'Passengers:',
-        '',
-        'Ref: ' + ref
-      ].join('\n');
+      function smsHref(ref) {
+        var body = [
+          'Hello Hamptons Black Car & Limo, I\'d like to request a quote for the following trip:',
+          '',
+          'Pickup location:',
+          'Drop-off location:',
+          'Date and time:',
+          'Passengers:',
+          '',
+          'Ref: ' + ref
+        ].join('\n');
+        return 'sms:' + PHONE + (isIOS ? '&' : '?') + 'body=' + encodeURIComponent(body);
+      }
+
+      function emailHref(ref) {
+        var subject = 'Quote Request — ' + ref;
+        var body = [
+          'Hello Hamptons Black Car & Limo,',
+          '',
+          'I\'d like to request a quote for the following trip:',
+          '',
+          'Pickup location:',
+          'Drop-off location:',
+          'Date and time:',
+          'Passengers:',
+          '',
+          'Thank you,',
+          '',
+          'Reference: ' + ref
+        ].join('\r\n');
+        return 'mailto:' + EMAIL +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
+      }
 
       var smsLink = document.getElementById('quote-text-link');
-      if (smsLink) {
-        // iOS uses "&body=" after the number; Android and everything else use "?body="
-        var isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
-                    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-        smsLink.href = 'sms:' + PHONE + (isIOS ? '&' : '?') + 'body=' + encodeURIComponent(smsBody);
-      }
-
-      // ── Email ──
-      var emailSubject = 'Quote Request — ' + ref;
-      var emailBody = [
-        'Hello Hamptons Black Car & Limo,',
-        '',
-        'I\'d like to request a quote for the following trip:',
-        '',
-        'Pickup location:',
-        'Drop-off location:',
-        'Date and time:',
-        'Passengers:',
-        '',
-        'Thank you,',
-        '',
-        'Reference: ' + ref
-      ].join('\r\n');
-
       var emailLink = document.getElementById('quote-email-link');
-      if (emailLink) {
-        emailLink.href = 'mailto:' + EMAIL +
-          '?subject=' + encodeURIComponent(emailSubject) +
-          '&body=' + encodeURIComponent(emailBody);
+
+      // Give each link a valid reference up front, then mint a brand-new one
+      // the instant it's tapped — so every quote request carries its own code,
+      // even if the same person comes back and sends a second one.
+      function wire(link, build) {
+        if (!link) return;
+        link.href = build(buildRef());
+        link.addEventListener('click', function () {
+          link.href = build(buildRef());
+        });
       }
+
+      wire(smsLink, smsHref);
+      wire(emailLink, emailHref);
     })();
   </script>
   <!-- ── FOOTER ── -->
