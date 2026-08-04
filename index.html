@@ -1828,7 +1828,6 @@
                   (navigator.platform === 'MacIntel' && (navigator.maxTouchPoints || 0) > 1);
     var smsSep = isApple ? '&' : '?';
 
-    function telHref()      { return 'tel:' + PHONE; }
     function smsHref(ref)   { return 'sms:' + PHONE + smsSep + 'body=' + encodeURIComponent(smsBody(ref)); }
     function mailHref(ref)  {
       return 'mailto:' + EMAIL +
@@ -1874,7 +1873,13 @@
     var textEl  = document.getElementById('quote-text-link');
     var emailEl = document.getElementById('quote-email-link');
 
-    if (callEl) callEl.setAttribute('href', telHref());
+    /* The call link is intentionally left alone here. Its href is
+       hard-coded correctly in the HTML and never needs to change, and
+       some mobile browsers — especially the in-app browsers inside
+       Instagram, TikTok, Facebook, etc. — treat ANY script touching a
+       tel: link as a sign of auto-dialing abuse and block it outright,
+       even when the script never triggers the call itself. Not
+       touching it at all is what keeps it from being flagged. */
     var textState  = wire(textEl,  smsHref);
     var emailState = wire(emailEl, mailHref);
 
