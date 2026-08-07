@@ -1502,6 +1502,215 @@
     }
 
     /* ══════════════════════════════════════════════════════════
+       MOTION LAYER
+       Every hidden state is scoped to .js, so if the script never
+       runs the page still renders complete and static. Nothing here
+       hides content permanently.
+       ══════════════════════════════════════════════════════════ */
+
+    /* ── Hero entrance ──
+       One orchestrated sequence on load, in reading order: rules draw
+       outward, the headline wipes up from behind its own baseline, the
+       promise fades, the buttons lift in last. Runs once. */
+    .js .hero-eyebrow::before,
+    .js .hero-eyebrow::after {
+      width: 0;
+      transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+    }
+
+    .js .hero.is-ready .hero-eyebrow::before,
+    .js .hero.is-ready .hero-eyebrow::after { width: 32px; }
+
+    .js .hero-eyebrow {
+      opacity: 0;
+      transition: opacity 0.6s ease 0.05s;
+    }
+
+    .js .hero.is-ready .hero-eyebrow { opacity: 1; }
+
+    /* The heading is clipped to its own box and slid up from beneath,
+       so the serif appears to rise out of the page rather than fade in. */
+    .js .hero-heading {
+      clip-path: inset(0 0 105% 0);
+      transform: translateY(28px);
+      transition: clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s,
+                  transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+    }
+
+    .js .hero.is-ready .hero-heading {
+      clip-path: inset(-25% 0 -25% 0);
+      transform: translateY(0);
+    }
+
+    .js .price-promise {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.7s ease 0.55s, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.55s;
+    }
+
+    .js .hero.is-ready .price-promise { opacity: 1; transform: translateY(0); }
+
+    .js .price-promise::before {
+      transform: translateX(-50%) scaleX(0);
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
+    }
+
+    .js .hero.is-ready .price-promise::before { transform: translateX(-50%) scaleX(1); }
+
+    .js .quote-primary,
+    .js .quote-email {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+
+    .js .quote-primary {
+      transition: opacity 0.65s ease 0.75s, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.75s;
+    }
+
+    .js .quote-email {
+      transition: opacity 0.65s ease 0.86s, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.86s;
+    }
+
+    .js .hero.is-ready .quote-primary,
+    .js .hero.is-ready .quote-email { opacity: 1; transform: translateY(0); }
+
+    /* ── Hero photograph: a drift you feel rather than see ──
+       28s each way. Any faster and it reads as a zoom. */
+    .hero-bg {
+      animation: hero-drift 34s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    @keyframes hero-drift {
+      from { transform: scale(1); }
+      to   { transform: scale(1.06); }
+    }
+
+    /* ── Nav condenses past the fold ── */
+    nav {
+      transition: background 0.4s ease, backdrop-filter 0.4s ease,
+                  height 0.35s ease, padding 0.35s ease;
+    }
+
+    nav.scrolled { height: 60px; }
+
+    .logo-mark,
+    .logo-text {
+      transition: width 0.35s ease, height 0.35s ease, font-size 0.35s ease;
+    }
+
+    nav.scrolled .logo-mark { width: 30px; height: 30px; }
+    nav.scrolled .logo-text { font-size: 19px; }
+
+    /* ── Section headings wipe up ──
+       A fade suits a sans-serif; a serif this large wants to arrive
+       from behind an edge. */
+    .js .section-heading {
+      transition: clip-path 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .js .section-heading:not(.is-revealed) {
+      clip-path: inset(0 0 105% 0);
+      transform: translateY(22px);
+    }
+
+    .js .section-heading.is-revealed {
+      clip-path: inset(-25% 0 -25% 0);
+      transform: translateY(0);
+    }
+
+    /* ── The slip tallies itself ──
+       Rows arrive top to bottom, the dotted leader draws left to right,
+       and the amount lands a beat after its label — the reading order of
+       someone adding up a bill. */
+    .js .slip-row {
+      transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .js .slip-row:not(.is-revealed) {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    .js .slip-row .lead {
+      transform-origin: left center;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+    }
+
+    .js .slip-row:not(.is-revealed) .lead {
+      transform: translateY(-3px) scaleX(0);
+    }
+
+    .js .slip-row.is-revealed .lead {
+      transform: translateY(-3px) scaleX(1);
+    }
+
+    .js .slip-val {
+      transition: opacity 0.45s ease 0.3s;
+    }
+
+    .js .slip-row:not(.is-revealed) .slip-val { opacity: 0; }
+
+    .js .slip-total {
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .js .slip-total:not(.is-revealed) {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    /* The trust figures count up rather than sit there; the tabular
+       variant stops the row from twitching as digits change width. */
+    .trust-number { font-variant-numeric: tabular-nums; }
+
+    /* ── Reduced motion: everything above resolves to its end state ── */
+    @media (prefers-reduced-motion: reduce) {
+      .hero-bg { animation: none; }
+
+      .js .hero-eyebrow,
+      .js .hero-heading,
+      .js .price-promise,
+      .js .quote-primary,
+      .js .quote-email,
+      .js .section-heading,
+      .js .slip-row,
+      .js .slip-total,
+      .js .slip-val,
+      .js .slip-row .lead,
+      nav,
+      .logo-mark,
+      .logo-text {
+        transition: none !important;
+      }
+
+      .js .hero-eyebrow { opacity: 1; }
+      .js .hero-eyebrow::before,
+      .js .hero-eyebrow::after { width: 32px; }
+
+      .js .hero-heading,
+      .js .section-heading,
+      .js .section-heading:not(.is-revealed) {
+        clip-path: none;
+        transform: none;
+      }
+
+      .js .price-promise,
+      .js .quote-primary,
+      .js .quote-email,
+      .js .slip-row:not(.is-revealed),
+      .js .slip-total:not(.is-revealed) {
+        opacity: 1;
+        transform: none;
+      }
+
+      .js .price-promise::before { transform: translateX(-50%) scaleX(1); }
+      .js .slip-row:not(.is-revealed) .lead { transform: translateY(-3px) scaleX(1); }
+      .js .slip-row:not(.is-revealed) .slip-val { opacity: 1; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
        INTERACTION & MOTION
        Appended last so it wins the cascade over everything above.
        ══════════════════════════════════════════════════════════ */
@@ -2601,10 +2810,58 @@
          threshold could never be met by a card taller than the phone
          screen, which left those cards invisible for good. */
       var targets = document.querySelectorAll(
-        '.fleet-card, .zone-card, .exp-point, .trust-item, .service-card'
+        '.fleet-card, .zone-card, .exp-point, .trust-item, .service-card, ' +
+        '.pillar, .section-heading, .slip-row, .slip-total'
       );
 
-      function reveal(el) { el.classList.add('is-revealed'); }
+      /* Slip rows are staggered off their own index so the invoice
+         tallies downward instead of appearing all at once. */
+      var slipRows = document.querySelectorAll('.slip-row');
+      for (var r = 0; r < slipRows.length; r++) {
+        slipRows[r].style.transitionDelay = (r * 0.07) + 's';
+        var leadEl = slipRows[r].querySelector('.lead');
+        var valEl = slipRows[r].querySelector('.slip-val');
+        if (leadEl) leadEl.style.transitionDelay = (0.12 + r * 0.07) + 's';
+        if (valEl) valEl.style.transitionDelay = (0.3 + r * 0.07) + 's';
+      }
+
+      function reveal(el) {
+        if (el.classList.contains('is-revealed')) return;
+        el.classList.add('is-revealed');
+        if (el.classList.contains('trust-item')) countUp(el);
+      }
+
+      /* ── Trust figures count up ──
+         The label is read off the markup, so 12+, 98%, 4.9 and 24/7 each
+         animate to the number already on the page. If anything about the
+         value can't be parsed, it is left exactly as authored. */
+      function countUp(item) {
+        var node = item.querySelector('.trust-number');
+        if (!node || node.dataset.counted) return;
+        node.dataset.counted = '1';
+
+        var suffix = node.querySelector('span');
+        var suffixHTML = suffix ? suffix.outerHTML : '';
+        var raw = node.firstChild && node.firstChild.nodeValue;
+        var target = parseFloat(raw);
+        if (isNaN(target)) return;
+
+        var decimals = (raw.indexOf('.') > -1) ? raw.split('.')[1].length : 0;
+        var start = null;
+        var duration = 1100;
+
+        function frame(now) {
+          if (start === null) start = now;
+          var p = Math.min((now - start) / duration, 1);
+          /* ease-out: fast off the mark, settling onto the figure */
+          var eased = 1 - Math.pow(1 - p, 3);
+          node.innerHTML = (target * eased).toFixed(decimals) + suffixHTML;
+          if (p < 1) window.requestAnimationFrame(frame);
+        }
+
+        node.innerHTML = (0).toFixed(decimals) + suffixHTML;
+        window.requestAnimationFrame(frame);
+      }
 
       /* Belt and braces: once the page is scrolled to the end there is
          nothing left to wait for, so anything still unrevealed is shown.
@@ -2629,6 +2886,19 @@
         for (var i = 0; i < targets.length; i++) io.observe(targets[i]);
       } else {
         for (var j = 0; j < targets.length; j++) reveal(targets[j]);
+      }
+
+      /* ── Hero entrance ──
+         Fired on the next frame after paint so the transitions have a
+         start state to move away from. Reduced-motion users get the end
+         state immediately, via CSS. */
+      var hero = document.querySelector('.hero');
+      if (hero) {
+        window.requestAnimationFrame(function () {
+          window.requestAnimationFrame(function () {
+            hero.classList.add('is-ready');
+          });
+        });
       }
 
       window.__revealReady = true;
