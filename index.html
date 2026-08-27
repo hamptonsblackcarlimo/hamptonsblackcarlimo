@@ -977,18 +977,18 @@
       text-align: center;
     }
 
+    /* Four equal tiles, 2 x 2. Every action carries the same weight,
+       so the grid decides the size rather than each button's content. */
     .quote-primary {
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
       width: 100%;
     }
 
     .quote-btn {
-      flex: 1 1 0;
-      max-width: 300px;
-      min-height: 78px;
+      width: 100%;
+      min-height: 82px;
       display: flex;
       align-items: center;
       gap: 15px;
@@ -1065,6 +1065,27 @@
           inset 0 -1px 0 rgba(0, 0, 0, 0.25),
           0 18px 48px rgba(0, 0, 0, 0.52);
       }
+
+      /* Tinted tiles borrow their own accent on hover instead of gold. */
+      .quote-btn-glass.is-call:hover,
+      .quote-btn-glass.is-whatsapp:hover,
+      .quote-btn-glass.is-email:hover {
+        border-color: rgba(var(--accent), 0.60);
+        box-shadow:
+          inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+          0 18px 48px rgba(0, 0, 0, 0.52),
+          0 8px 26px rgba(var(--accent), 0.18);
+      }
+
+      .quote-btn-glass.is-call:hover::after,
+      .quote-btn-glass.is-whatsapp:hover::after,
+      .quote-btn-glass.is-email:hover::after {
+        background: linear-gradient(to right,
+          rgba(var(--accent), 0) 0%,
+          rgba(var(--accent), 0.85) 50%,
+          rgba(var(--accent), 0) 100%);
+      }
     }
 
     .quote-btn:active { transform: translateY(0) scale(0.985); }
@@ -1079,6 +1100,48 @@
 
     .quote-btn-gold .quote-ico { color: var(--obsidian); opacity: 0.9; }
     .quote-btn-glass .quote-ico { color: var(--gold); }
+
+    /* ── CHANNEL ACCENTS ──
+       Each action gets its own colour so the row is scannable at a glance,
+       but the colour is carried by the icon and the hover edge only. The
+       tile stays black glass, so four tinted buttons still read as one
+       set rather than four competing brands. --accent drives everything
+       below, so a channel's colour is changed in exactly one place. */
+    .quote-btn-glass.is-call     { --accent: 201, 169, 110; }   /* gold — house colour */
+    .quote-btn-glass.is-whatsapp { --accent:  37, 211, 102; }   /* WhatsApp green */
+    .quote-btn-glass.is-email    { --accent: 126, 168, 216; }   /* muted steel blue */
+
+    .quote-btn-glass.is-call .quote-ico,
+    .quote-btn-glass.is-whatsapp .quote-ico,
+    .quote-btn-glass.is-email .quote-ico {
+      color: rgb(var(--accent));
+    }
+
+    /* The WhatsApp mark is the official solid glyph rather than a drawn
+       outline, so it lands heavier than the stroked icons beside it.
+       Scaling it slightly evens out the optical weight across the row.
+       Scale rather than a fixed width so it still follows the responsive
+       .quote-ico sizes further down. */
+    .quote-btn-glass.is-whatsapp .quote-ico {
+      transform: scale(0.94);
+    }
+
+    /* A hairline of colour along the top edge — enough to identify the
+       tile in peripheral vision without shouting. */
+    .quote-btn-glass.is-call::after,
+    .quote-btn-glass.is-whatsapp::after,
+    .quote-btn-glass.is-email::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 16px; right: 16px;
+      height: 1.5px;
+      border-radius: 0 0 2px 2px;
+      background: linear-gradient(to right,
+        rgba(var(--accent), 0) 0%,
+        rgba(var(--accent), 0.55) 50%,
+        rgba(var(--accent), 0) 100%);
+      pointer-events: none;
+    }
 
     .quote-btn-copy {
       display: flex;
@@ -1105,80 +1168,57 @@
       letter-spacing: 0.01em;
       opacity: 0.7;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* The address is longer than a phone number — let it sit a touch
+       smaller so all four tiles still read as one set. */
+    .quote-btn-sub.is-email {
+      font-size: 12px;
+      letter-spacing: 0;
     }
 
     .quote-btn-glass .quote-btn-sub { text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35); }
 
-    /* Email — the quieter third option */
-    .quote-email {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 11px;
-      padding: 13px 28px;
-      border-radius: 999px;
-      background: rgba(10, 10, 15, 0.30);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.20);
-      color: rgba(245, 242, 237, 0.88);
-      font-family: 'Inter', sans-serif;
-      font-size: 12.5px;
-      font-weight: 500;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
-      text-decoration: none;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
-      -webkit-tap-highlight-color: transparent;
-      transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease, transform 0.2s ease;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      .quote-email:hover {
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(201, 169, 110, 0.55);
-        color: #fff;
-        transform: translateY(-1px);
-      }
-    }
-
-    .quote-email:active { transform: translateY(0) scale(0.985); }
-
-    .quote-email .quote-ico { width: 17px; height: 17px; color: var(--gold); }
-
     /* Keyboard focus */
-    .quote-btn:focus-visible,
-    .quote-email:focus-visible {
+    .quote-btn:focus-visible {
       outline: 2px solid var(--gold-light);
       outline-offset: 3px;
     }
 
+    .quote-btn-glass.is-call:focus-visible,
+    .quote-btn-glass.is-whatsapp:focus-visible,
+    .quote-btn-glass.is-email:focus-visible {
+      outline-color: rgb(var(--accent));
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      .quote-btn, .quote-email { transition: none; }
-      .quote-btn:hover, .quote-email:hover { transform: none; }
+      .quote-btn { transition: none; }
+      .quote-btn:hover { transform: none; }
     }
 
     /* ── QUOTE ACTIONS — tablet & phone ── */
     @media (max-width: 900px) {
       .quote-actions { gap: 14px; max-width: 100%; }
       .quote-lede { font-size: 13.5px; }
-      .quote-primary { flex-direction: column; gap: 12px; width: 100%; }
+      .quote-primary { gap: 12px; }
       .quote-btn {
-        flex: 1 1 auto;
-        width: 100%;
-        max-width: 100%;
-        min-height: 72px;
-        padding: 15px 20px;
+        min-height: 76px;
+        padding: 15px 18px;
+        gap: 13px;
       }
-      .quote-email { width: 100%; padding: 15px 20px; font-size: 12px; }
     }
 
     @media (max-width: 600px) {
       .quote-lede { font-size: 13px; line-height: 1.45; }
+      .quote-primary { grid-template-columns: 1fr; gap: 11px; }
       .quote-btn { min-height: 68px; gap: 13px; padding: 14px 18px; border-radius: 14px; }
       .quote-btn::before { border-radius: 14px 14px 0 0; }
       .quote-btn-label { font-size: 12.5px; letter-spacing: 0.07em; }
       .quote-btn-sub { font-size: 13px; }
+      .quote-btn-sub.is-email { font-size: 12.5px; }
       .quote-ico { width: 20px; height: 20px; }
     }
 
@@ -1186,7 +1226,7 @@
       .quote-btn { padding: 13px 15px; gap: 11px; min-height: 64px; }
       .quote-btn-label { font-size: 11.5px; }
       .quote-btn-sub { font-size: 12.5px; }
-      .quote-email { font-size: 11px; letter-spacing: 0.08em; padding: 14px 16px; }
+      .quote-btn-sub.is-email { font-size: 11.5px; }
     }
 
     /* ══════════════════════════════════════════════════════════
@@ -2002,7 +2042,7 @@
             </span>
           </a>
 
-          <a class="quote-btn quote-btn-glass" id="quote-call-link" href="tel:+16319492851" aria-label="Call Hamptons Black Car and Limo at (631) 949-2851 for a quote">
+          <a class="quote-btn quote-btn-glass is-call" id="quote-call-link" href="tel:+16319492851" aria-label="Call Hamptons Black Car and Limo at (631) 949-2851 for a quote">
             <svg class="quote-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path>
             </svg>
@@ -2011,15 +2051,26 @@
               <span class="quote-btn-sub">(631) 949-2851</span>
             </span>
           </a>
-        </div>
 
-        <a class="quote-email" id="quote-email-link" href="mailto:hamptonsblackcarlimo@gmail.com" aria-label="Email Hamptons Black Car and Limo for a quote">
-          <svg class="quote-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <a class="quote-btn quote-btn-glass is-whatsapp" id="quote-whats-link" href="https://wa.me/16319492851" target="_blank" rel="noopener" aria-label="Message Hamptons Black Car and Limo on WhatsApp at (631) 949-2851 for a quote">
+            <svg class="quote-ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.488"></path></svg>
+            <span class="quote-btn-copy">
+              <span class="quote-btn-label">WhatsApp a Quote</span>
+              <span class="quote-btn-sub">(631) 949-2851</span>
+            </span>
+          </a>
+
+          <a class="quote-btn quote-btn-glass is-email" id="quote-email-link" href="mailto:hamptonsblackcarlimo@gmail.com" aria-label="Email Hamptons Black Car and Limo for a quote">
+            <svg class="quote-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
             <polyline points="22,6 12,13 2,6"></polyline>
           </svg>
-          <span>Email a Quote Request</span>
-        </a>
+            <span class="quote-btn-copy">
+              <span class="quote-btn-label">Email a Quote</span>
+              <span class="quote-btn-sub is-email">hamptonsblackcarlimo@gmail.com</span>
+            </span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -2358,6 +2409,7 @@
 
     var PHONE  = '+16319492851';
     var HUMAN  = '(631) 949-2851';
+    var WA     = '16319492851';   /* wa.me wants digits only — no +, no spaces */
     var EMAIL  = 'hamptonsblackcarlimo@gmail.com';
 
     /* ── Passive listeners, safely ── */
@@ -2453,6 +2505,11 @@
     var smsSep = isApple ? '&' : '?';
 
     function smsHref(ref)   { return 'sms:' + PHONE + smsSep + 'body=' + encodeURIComponent(smsBody(ref)); }
+
+    /* wa.me hands off to the installed WhatsApp app on a phone and to
+       WhatsApp Web on a desktop, so one link covers both. It takes the
+       same message body as the text, reference code included. */
+    function whatsHref(ref) { return 'https://wa.me/' + WA + '?text=' + encodeURIComponent(smsBody(ref)); }
     function mailHref(ref)  {
       return 'mailto:' + EMAIL +
              '?subject=' + encodeURIComponent(emailSubject(ref)) +
@@ -2495,6 +2552,7 @@
 
     var callEl  = document.getElementById('quote-call-link');
     var textEl  = document.getElementById('quote-text-link');
+    var whatsEl = document.getElementById('quote-whats-link');
     var emailEl = document.getElementById('quote-email-link');
 
     /* The call link is intentionally left alone here. Its href is
@@ -2505,6 +2563,7 @@
        even when the script never triggers the call itself. Not
        touching it at all is what keeps it from being flagged. */
     var textState  = wire(textEl,  smsHref);
+    var whatsState = wire(whatsEl, whatsHref);
     var emailState = wire(emailEl, mailHref);
 
     /* ══════════════════════════════════════════════════════════════
